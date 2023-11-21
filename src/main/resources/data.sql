@@ -1,0 +1,2 @@
+insert into location(address, latitude, longitude) VALUES ("Station1Address", 1231354,124554)
+INSERT INTO `charging-station`.`charging_station` (`id`, `charger_type`, `status`, `location_address`) VALUES ('station1', 'AC', 'Available', 'Station1Address');
