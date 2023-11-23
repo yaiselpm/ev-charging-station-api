@@ -37,10 +37,14 @@ import com.killer.evchargingstationapi.domain.ChargingStation;
 import com.killer.evchargingstationapi.domain.Location;
 import com.killer.evchargingstationapi.domain.Status;
 import com.killer.evchargingstationapi.services.ChargingStationService;
+import com.killer.evchargingstationapi.services.dtos.ChargingStationDTO;
 
 // import lombok.With;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
@@ -115,8 +119,19 @@ public class ChargingStationControllerTest {
     }
 
     @Test
-    void testFindAllChargingStation() {
+    void testFindAllChargingStation() throws Exception {
+        List<ChargingStationDTO> stationDTOs= new ArrayList<ChargingStationDTO>();
+        ChargingStationDTO stationDTO= new ChargingStationDTO();
+        stationDTO.setId("stn2");
+        stationDTO.setPowerLevel(200);
+        stationDTOs.add(stationDTO);
+        when(stationService.findAll()).thenReturn(stationDTOs);
 
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                        .get("/stations");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(200, response.getStatus());
     }
 
     @Test
