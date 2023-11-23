@@ -11,12 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Table(name = "chargingPoint")
 public class ChargingPoint {
     
@@ -27,4 +29,6 @@ public class ChargingPoint {
     private Boolean inUse;
     @ManyToOne()
     private ChargingStation chargingStation;
+
+    
 }

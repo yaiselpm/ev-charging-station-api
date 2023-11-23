@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.killer.evchargingstationapi.domain.ChargingStation;
+import com.killer.evchargingstationapi.domain.Status;
 import com.killer.evchargingstationapi.services.ChargingStationService;
+import com.killer.evchargingstationapi.services.dtos.ChargingStationDTO;
 
 @RestController
 @RequestMapping(path = "/stations")
@@ -46,14 +48,14 @@ public class ChargingStationController {
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<ChargingStation> findByAddressId(@PathVariable String requestedId){
-        ChargingStation chargingStation = findChargingStation(requestedId);
+    public ResponseEntity<ChargingStationDTO> findByAddressId(@PathVariable String requestedId){
+        ChargingStationDTO chargingStation = findChargingStation(requestedId);
         return (chargingStation!=null)? ResponseEntity.ok(chargingStation): ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<ChargingStation>> findAllChargingStation(){
-        List<ChargingStation> lChargingStations = chargingStationService.findAll();
+    public ResponseEntity<List<ChargingStationDTO>> findAllChargingStation(){
+        List<ChargingStationDTO> lChargingStations = chargingStationService.findAll();
         return ResponseEntity.ok(lChargingStations);
     }
 
@@ -75,7 +77,8 @@ public class ChargingStationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable String id){
         boolean exist = chargingStationService.existsById(id);
-        if (exist) {
+        ChargingStationDTO station= findChargingStation(id);
+        if (exist && station.getStatus()==Status.Available) {
             chargingStationService.deleteStation(id);
             return ResponseEntity.noContent().build();
         }
@@ -83,12 +86,12 @@ public class ChargingStationController {
     }
 
     @GetMapping("/availables")
-    public ResponseEntity<List<ChargingStation>> findAllAvailables(){
-        List<ChargingStation> availableStations = chargingStationService.findWhereStatusAvailable();
+    public ResponseEntity<List<ChargingStationDTO>> findAllAvailables(){
+        List<ChargingStationDTO> availableStations = chargingStationService.findWhereStatusAvailable();
         return ResponseEntity.ok(availableStations);
     }
 
-    private ChargingStation findChargingStation(String requestedId){
+    private ChargingStationDTO findChargingStation(String requestedId){
         return chargingStationService.findByAddressId(requestedId);
     }
 }

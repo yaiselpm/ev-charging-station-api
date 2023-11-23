@@ -22,11 +22,16 @@ public class CustomIdGenerator implements IdentifierGenerator{
         Statement statement=connection.createStatement();
 
         ResultSet rs=statement.executeQuery("select count(id) as Id from charging_station");
-
+        ResultSet res=statement.executeQuery("select max(id) as Id from charging_station");
+        System.out.println("RESULTADO "+res);
         if(rs.next())
         {
             int id=rs.getInt(1)+101;
             String generatedId = prefix + new Integer(id).toString();
+            if (generatedId==res.getString(1)) {
+                id++;
+                generatedId=prefix+ new Integer(id).toString();
+            }
             return generatedId;
         }
     } catch (SQLException e) {

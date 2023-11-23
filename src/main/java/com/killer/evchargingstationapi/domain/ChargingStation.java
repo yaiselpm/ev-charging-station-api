@@ -32,7 +32,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "charging_station")
-// @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})   
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})   
 public class ChargingStation {
     
     @Id
@@ -53,6 +53,7 @@ public class ChargingStation {
     @Enumerated(EnumType.STRING)
     private ChargerType chargerType;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "chargingStation")
     private List<ChargingPoint> chargingPoints; 
 

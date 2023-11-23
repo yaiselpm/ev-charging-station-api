@@ -1,5 +1,6 @@
 package com.killer.evchargingstationapi.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.killer.evchargingstationapi.domain.ChargingStation;
+import com.killer.evchargingstationapi.domain.Location;
 import com.killer.evchargingstationapi.domain.Status;
+import com.killer.evchargingstationapi.mappers.ChargingStationToDTo;
 import com.killer.evchargingstationapi.repositories.ChargingStationRepository;
+import com.killer.evchargingstationapi.repositories.LocationRepository;
+import com.killer.evchargingstationapi.services.dtos.ChargingStationDTO;
 
 @Service
 public class ChargingStationService {
@@ -21,25 +26,50 @@ public class ChargingStationService {
     @Autowired
     private ChargingStationRepository chargingStationRepository;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
+    private ChargingStationToDTo mapper;
+
+    /**
+     * @param chargingStationRepository
+     */
+    public ChargingStationService(ChargingStationRepository chargingStationRepository, ChargingStationToDTo mapper) {
+        this.chargingStationRepository = chargingStationRepository;
+        this.mapper = mapper;
+    }
+
     @Transactional
     public ChargingStation createChargingStation(ChargingStation chargingStation){
+        Location location = locationRepository.save(chargingStation.getLocation());
+        chargingStation.setLocation(location);
         return chargingStationRepository.save(chargingStation);
     }
 
-    public ChargingStation findByAddressId(String addressId){
-        return chargingStationRepository.getReferenceById(addressId);
+    public ChargingStationDTO findByAddressId(String addressId){
+       ChargingStation chargingStation = chargingStationRepository.getReferenceById(addressId);
+       ChargingStationDTO chargingStationDTO = mapper.map(chargingStation);
+       return chargingStationDTO;
+
     }
 
-    public List<ChargingStation> findWhereStatusAvailable(){
-        return chargingStationRepository.findByStatus(Status.Available);
+    public List<ChargingStationDTO> findWhereStatusAvailable(){
+        List<ChargingStation> chargingStations = chargingStationRepository.findByStatus(Status.Available);
+        List<ChargingStationDTO> chargingStationDTOs= new ArrayList<ChargingStationDTO>();
+        for (ChargingStation chargingStation : chargingStations) {
+            ChargingStationDTO stationDTO = mapper.map(chargingStation);
+            chargingStationDTOs.add(stationDTO);
+        }
+        return chargingStationDTOs;
     }
 
     @Transactional
     public ChargingStation updateChargingStation(ChargingStation chargingStation){
+        
         return chargingStationRepository.save(chargingStation);
     }
 
-    public void deleteStation(String id){
+    public void deleteStation(String id){        
         chargingStationRepository.deleteById(id);
     }
 
@@ -47,7 +77,13 @@ public class ChargingStationService {
         return chargingStationRepository.existsById(id);
     }
 
-    public List<ChargingStation> findAll(){
-        return chargingStationRepository.findAll();
+    public List<ChargingStationDTO> findAll(){
+        List<ChargingStation> chargingStations = chargingStationRepository.findAll();
+        List<ChargingStationDTO> chargingStationDTOs= new ArrayList<ChargingStationDTO>();
+        for (ChargingStation chargingStation : chargingStations) {
+            ChargingStationDTO stationDTO = mapper.map(chargingStation);
+            chargingStationDTOs.add(stationDTO);
+        }
+        return chargingStationDTOs;
     }
 }
