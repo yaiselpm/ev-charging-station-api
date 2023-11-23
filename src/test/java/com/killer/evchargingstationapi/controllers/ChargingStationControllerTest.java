@@ -114,8 +114,19 @@ public class ChargingStationControllerTest {
     }
 
     @Test
-    void testFindAllAvailables() {
+    void testFindAllAvailables() throws Exception {
+        List<ChargingStationDTO> stationDTOs= new ArrayList<ChargingStationDTO>();
+        ChargingStationDTO stationDTO= new ChargingStationDTO();
+        stationDTO.setId("stn2");
+        stationDTO.setPowerLevel(200);
+        stationDTOs.add(stationDTO);
+        when(stationService.findAll()).thenReturn(stationDTOs);
 
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                        .get("/stations/availables");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(200, response.getStatus());
     }
 
     @Test
@@ -135,7 +146,7 @@ public class ChargingStationControllerTest {
     }
 
     @Test
-    void testFindByAddressId() throws Exception {
+    void testFindById() throws Exception {
         List<ChargingStationDTO> stationDTOs= new ArrayList<ChargingStationDTO>();
         ChargingStationDTO stationDTO= new ChargingStationDTO();
         stationDTO.setId("stn2");
