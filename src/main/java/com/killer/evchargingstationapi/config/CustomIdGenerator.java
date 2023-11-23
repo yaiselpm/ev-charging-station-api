@@ -16,21 +16,24 @@ public class CustomIdGenerator implements IdentifierGenerator{
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         
         String prefix = "stn";
+        int ids=101;
         Connection connection = session.connection();
 
     try {
         Statement statement=connection.createStatement();
-
-        ResultSet rs=statement.executeQuery("select count(id) as Id from charging_station");
-        ResultSet res=statement.executeQuery("select max(id) as Id from charging_station");
-        System.out.println("RESULTADO "+res);
-        if(rs.next())
+        
+        ResultSet res=statement.executeQuery("select MAX(id) from charging_station");
+        if(res.next())
         {
-            int id=rs.getInt(1)+101;
-            String generatedId = prefix + new Integer(id).toString();
-            if (generatedId==res.getString(1)) {
-                id++;
-                generatedId=prefix+ new Integer(id).toString();
+            String s =res.getString("MAX(id)");
+            int newId= Integer.parseInt(s.substring(3));           
+            String generatedId = prefix + new Integer(ids).toString();           
+            if (res.getString("MAX(id)")==null) {
+                return generatedId;
+            }
+            if (res.getString("Max(id)")!=null) {               
+                newId++;
+                generatedId=prefix+ new Integer(newId).toString();
             }
             return generatedId;
         }
