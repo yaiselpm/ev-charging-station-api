@@ -135,8 +135,19 @@ public class ChargingStationControllerTest {
     }
 
     @Test
-    void testFindByAddressId() {
-        
+    void testFindByAddressId() throws Exception {
+        List<ChargingStationDTO> stationDTOs= new ArrayList<ChargingStationDTO>();
+        ChargingStationDTO stationDTO= new ChargingStationDTO();
+        stationDTO.setId("stn2");
+        stationDTO.setPowerLevel(200);
+        stationDTOs.add(stationDTO);
+        when(stationService.findByAddressId("stn102")).thenReturn(stationDTO);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                        .get("/stations/{id}", "stn102");
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(200, response.getStatus());
     }
 
     @Test
