@@ -65,7 +65,7 @@ public class ChargingStationService {
 
     @Transactional
     public ChargingStation updateChargingStation(ChargingStation chargingStation){
-        
+        locationRepository.save(chargingStation.getLocation());        
         return chargingStationRepository.save(chargingStation);
     }
 

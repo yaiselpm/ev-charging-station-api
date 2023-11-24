@@ -162,7 +162,25 @@ public class ChargingStationControllerTest {
     }
 
     @Test
-    void testUpdateChargingStation() {
+    void testUpdateChargingStation() throws Exception {
+         String content1 = "{\"id\":\"stn103\",\"chargerType\":\"AC\",\"status\":\"In_Use\"}";
+        Location location= new Location("ds",23231l,143534l);
+        ChargingStation chargingStation = new ChargingStation("stn102",location, ChargerType.AC,Status.Available);            
+        ChargingStationDTO stationDTO= new ChargingStationDTO();
+        stationDTO.setId("stn2");
+        stationDTO.setStatus(Status.In_Use);;        
+        when(stationService.findByAddressId("stn103")).thenReturn(stationDTO);
+        Mockito.when(stationService.updateChargingStation(Mockito.any(ChargingStation.class))).thenReturn(chargingStation);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                        .put("/stations/{id}","stn103")                        
+                        .with(httpBasic("operator", "abc123"))                        
+                        .header("Authorization", "Basic b3BlcmF0b3I6YWJjMTIz")
+                        .accept(MediaType.APPLICATION_JSON).content(content1)
+                        .contentType(MediaType.APPLICATION_JSON);
+        
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 }
