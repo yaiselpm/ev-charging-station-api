@@ -46,17 +46,17 @@ public class ChargingStationController {
             .toUri();
         return ResponseEntity.created(locationNewChargingStation).build();
     }
+    
+    @GetMapping
+    public ResponseEntity<List<ChargingStationDTO>> findAllChargingStation(){
+        List<ChargingStationDTO> lChargingStations = chargingStationService.findAll();
+        return ResponseEntity.ok(lChargingStations);
+    }
 
     @GetMapping("/{requestedId}")
     public ResponseEntity<ChargingStationDTO> findByAddressId(@PathVariable String requestedId){
         ChargingStationDTO chargingStation = findChargingStation(requestedId);
         return (chargingStation!=null)? ResponseEntity.ok(chargingStation): ResponseEntity.notFound().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<List<ChargingStationDTO>> findAllChargingStation(){
-        List<ChargingStationDTO> lChargingStations = chargingStationService.findAll();
-        return ResponseEntity.ok(lChargingStations);
     }
 
     @PutMapping("/{requestedId}")

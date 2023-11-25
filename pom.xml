@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.killer</groupId>
 	<artifactId>ev-charging-station-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>ev-charging-station-api</name>
 	<description>Charging Station project for Spring Boot</description>
 	<properties>

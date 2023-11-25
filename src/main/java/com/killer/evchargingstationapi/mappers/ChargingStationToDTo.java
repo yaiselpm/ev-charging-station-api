@@ -11,10 +11,10 @@ import com.killer.evchargingstationapi.services.dtos.ChargingStationDTO;
 @Component
 public class ChargingStationToDTo implements IMapper<ChargingStation,ChargingStationDTO>{
 
-    List<ChargingPoint> chargingPoints= new ArrayList<ChargingPoint>();
-    ChargingStationDTO stationDTO = new ChargingStationDTO();
+    // List<ChargingPoint> chargingPoints= new ArrayList<ChargingPoint>();
     @Override
     public ChargingStationDTO map(ChargingStation in) {
+        ChargingStationDTO stationDTO = new ChargingStationDTO();
                             
         double powerLevel=powerLevel(in.getChargingPoints());
         stationDTO.setId(in.getId());
@@ -35,7 +35,7 @@ public class ChargingStationToDTo implements IMapper<ChargingStation,ChargingSta
             return stationPoint.get(0).getPowerLevel();
         }
         for (ChargingPoint chargingPoint : stationPoint) {
-            chargingPoints.add(chargingPoint);
+            // chargingPoints.add(chargingPoint);
             result+=chargingPoint.getPowerLevel();
         }
         return result;

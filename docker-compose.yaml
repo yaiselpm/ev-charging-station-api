@@ -1,0 +1,41 @@
+version: "v2.21.0"
+services:
+  api_service:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - springapimysql-net
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/charging-station?allowPublicKeyRetrieval=true    
+    depends_on:
+      - mysqldb
+    
+    volumes:
+      - .m2:/root/.m2
+  services:
+    mysqldb:
+      container_name: mysqldb
+      image: mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: chargingstation
+      networks:
+        springboot-mysql-net:
+
+  springboot-chargingstation:
+    container_name: springboot-chargingstation
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysqldb
+    networks:
+      springboot-mysql-net:
+    restart: on-failure
+
+networks:
+  springboot-mysql-net:

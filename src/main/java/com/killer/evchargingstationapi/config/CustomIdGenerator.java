@@ -18,6 +18,7 @@ public class CustomIdGenerator implements IdentifierGenerator{
         String prefix = "stn";
         int ids=101;
         Connection connection = session.connection();
+        String generatedId = prefix + new Integer(ids).toString();           
 
     try {
         Statement statement=connection.createStatement();
@@ -25,16 +26,19 @@ public class CustomIdGenerator implements IdentifierGenerator{
         ResultSet res=statement.executeQuery("select MAX(id) from charging_station");
         if(res.next())
         {
+            
             String s =res.getString("MAX(id)");
-            int newId= Integer.parseInt(s.substring(3));           
-            String generatedId = prefix + new Integer(ids).toString();           
-            if (res.getString("MAX(id)")==null) {
-                return generatedId;
+            int newId= 0;
+            if (s!=null) {
+                newId= Integer.parseInt(s.substring(3));
             }
-            if (res.getString("Max(id)")!=null) {               
+            
+            System.out.println(s);  
+            if (res.getString("Max(id)")!=null) {             
                 newId++;
                 generatedId=prefix+ new Integer(newId).toString();
             }
+            session.close();
             return generatedId;
         }
     } catch (SQLException e) {
@@ -42,7 +46,7 @@ public class CustomIdGenerator implements IdentifierGenerator{
         e.printStackTrace();
     }
 
-    return null;
+    return generatedId;
     }
     
     
